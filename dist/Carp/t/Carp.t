@@ -3,7 +3,7 @@ no warnings "once";
 use Config;
 
 use IPC::Open3 1.0103 qw(open3);
-use Test::More tests => 67;
+use Test::More tests => 68;
 
 sub runperl {
     my(%args) = @_;
@@ -176,6 +176,11 @@ like( XA::short(), qr/^Error at XC/, "Short messages skip carped package" );
 {
     local @XB::CARP_NOT = "XD";
     local @XC::CARP_NOT = "XB";
+    like( XA::short(), qr/^Error at XA/, "\@CARP_NOT is transitive" );
+}
+
+{
+    local @XD::CARP_NOT = ( "XB", "XC" );
     like( XA::short(), qr/^Error at XA/, "\@CARP_NOT is transitive" );
 }
 
